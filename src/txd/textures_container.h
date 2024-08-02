@@ -12,6 +12,7 @@ namespace criterion::txd {
 
     class TexturesContainer {
     public:
+        TexturesContainer() = default;
         explicit TexturesContainer(FileStream& stream);
         std::vector<TextureTaggedData> collect() const;
     private:

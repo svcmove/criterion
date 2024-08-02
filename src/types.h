@@ -25,9 +25,22 @@ namespace criterion {
     using u32 = std::uint32_t;
     using i32 = std::int32_t;
 
+    enum CriterionRwType : u32 {
+        String = 2,
+        Texture = 6,
+        Material = 7
+    };
+    // https://gta.fandom.com/wiki/RenderWare_binary_stream_file
+    enum CriterionRwMarker {
+        Gta3 = 0x00000310,
+        Gta31 = 0x0800ffff,
+        GtaVc = 0x0C02ffff,
+        GtaVc1 = 0x1003ffff,
+        GtaSa = 0x1803ffff,
+    };
     struct ChunkHeader {
-        u32 type;
+        CriterionRwType type;
         u32 size;
-        u32 marker;
+        CriterionRwMarker marker;
     };
 }

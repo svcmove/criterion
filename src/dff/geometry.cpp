@@ -2,6 +2,52 @@
 #include <dff/geometry.h>
 
 namespace criterion::dff {
+    ImplicitString::ImplicitString(FileStream& stream) {
+        std::vector<char> buffer(sizeof(header));
+        stream.read(&buffer[0], sizeof(header));
+
+        std::memcpy(&header, &buffer[0], sizeof(header));
+        // Due to the null byte
+        buffer.resize(header.size);
+        stream.read(&buffer[0], buffer.size());
+
+        string = std::string(&buffer[0], buffer.size());
+    }
+
+    Texture::Texture(FileStream& stream) {
+        std::vector<char> buffer(sizeof(header));
+        stream.read(&buffer[0], sizeof(header));
+
+        std::memcpy(&header, &buffer[0], sizeof(header));
+
+        name = ImplicitString(stream);
+        mask = ImplicitString(stream);
+    }
+
+    Material::Material(FileStream& stream) {
+        std::vector<char> buffer(sizeof(header));
+        stream.read(&buffer[0], sizeof(header));
+
+        std::memcpy(&header, &buffer[0], sizeof(header));
+        if (header.textured) {
+            texture = Texture(stream);
+        }
+    }
+
+    MaterialList::MaterialList(FileStream& stream) {
+        std::vector<char> buffer(sizeof(header));
+        stream.read(&buffer[0], sizeof(header));
+        std::memcpy(&header, &buffer[0], sizeof(header));
+
+        for (u32 index{}; index < header.materialCount; index++) {
+            stream.read(&buffer[0], sizeof(4));
+        }
+        for (u32 index{}; index < header.materialCount; index++) {
+            materials.emplace_back(stream);
+        }
+
+    }
+
     Geometry::Geometry(FileStream& stream) {
         std::vector<char> buffer(sizeof(header));
         const auto position{stream.tellg()};
@@ -28,16 +74,20 @@ namespace criterion::dff {
         }
 
         RenderTriangles triangle{};
-        for (u32 index{}; index < header.vertexCount; index++) {
+        for (u32 index{}; index < header.trianglesCount; index++) {
             stream.read(&buffer[0], 8);
             triangle.xyz.x = *reinterpret_cast<u16*>(&buffer[0]);
             triangle.xyz.y = *reinterpret_cast<u16*>(&buffer[2]);
             triangle.xyz.z = *reinterpret_cast<u16*>(&buffer[4]);
 
             triangle.materialIndex = *reinterpret_cast<u16*>(&buffer[6]);
+
+            triangles.push_back(triangle);
         }
 
         stream.seekg(position, std::ios::beg);
-        stream.seekg(header.chunk.size, std::ios::cur);
+        stream.seekg(header.structure.size + 24, std::ios::cur);
+
+        materialPack = MaterialList(stream);
     }
 }

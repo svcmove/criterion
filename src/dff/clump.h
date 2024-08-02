@@ -2,8 +2,23 @@
 #include <list>
 
 #include <types.h>
-namespace criterion::dff {
 
+#include <dff/geometry.h>
+#include <dff/frames.h>
+namespace criterion::dff {
+    class FrameList {
+    public:
+        FrameList() = default;
+        explicit FrameList(FileStream& stream);
+    private:
+        struct {
+            ChunkHeader chunk;
+            ChunkHeader structure;
+            u32 frames;
+        } header;
+
+        std::list<Frames> frames;
+    };
     class GeometryList {
     public:
         GeometryList() = default;
@@ -13,10 +28,10 @@ namespace criterion::dff {
             ChunkHeader chunk;
             ChunkHeader structure;
 
-            i32 geometryCount;
+            u32 geometryCount;
         } header;
 
-        std::list<GeometryList> geometries;
+        std::list<Geometry> geometries;
     };
 
     class Clump {
@@ -32,6 +47,7 @@ namespace criterion::dff {
             u32 cameraCount;
         } packet;
 
-        GeometryList gList;
+        FrameList frames;
+        GeometryList geoPack;
     };
 }

@@ -4,6 +4,24 @@
 #include <dff/clump.h>
 
 namespace criterion::dff {
+    FrameList::FrameList(FileStream& stream) {
+        std::vector<char> buffer(sizeof(header));
+        stream.read(&buffer[0], sizeof(header));
+
+        std::memcpy(&header, &buffer[0], sizeof(header));
+        for (i32 frame{}; frame < header.frames; frame++) {
+            frames.emplace_back(stream);
+        }
+
+        ChunkHeader extension;
+        stream.readsome(&buffer[0], sizeof(extension));
+        std::memcpy(&extension, &buffer[0], sizeof(extension));
+
+        if (extension.type == 3) {
+            stream.seekg(extension.size, std::ios::cur);
+        }
+    }
+
     GeometryList::GeometryList(FileStream& stream) {
         std::vector<char> buffer(sizeof(header));
         stream.read(&buffer[0], sizeof(header));
@@ -11,7 +29,7 @@ namespace criterion::dff {
         std::memcpy(&header, &buffer[0], sizeof(header));
         for (i32 geometry{};
             geometry < header.geometryCount; geometry++) {
-
+            geometries.emplace_back(stream);
         }
     }
 
@@ -21,13 +39,9 @@ namespace criterion::dff {
 
         std::memcpy(&packet, &buffer[0], sizeof(packet));
 
-        ChunkHeader frameList;
-        stream.read(&buffer[0], sizeof(frameList));
-        std::memcpy(&frameList, &buffer[0], sizeof(frameList));
-
         // Let's skip the frame list for now
-        stream.seekg(frameList.size, std::ios::cur);
+        frames = FrameList(stream);
 
-        gList = GeometryList(stream);
+        geoPack = GeometryList(stream);
     }
 }

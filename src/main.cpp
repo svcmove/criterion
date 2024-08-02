@@ -59,6 +59,9 @@ namespace criterion {
         if (mode == "txd") {
             executor.txdFiles(std::move(inputStreams));
         }
+        if (mode == "dff") {
+            executor.dffFiles(std::move(inputStreams));
+        }
         return {};
     }
 }

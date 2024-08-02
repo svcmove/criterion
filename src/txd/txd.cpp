@@ -16,11 +16,11 @@ namespace criterion::txd {
 
         std::memcpy(&header, &buffer[0], sizeof(header));
 
-        textures = std::make_unique<TexturesContainer>(txd);
+        textures = TexturesContainer(txd);
     }
 
     void TxdStream::extract(const bool withPngs, const std::filesystem::path& output) const {
-        const auto tagged{textures->collect()};
+        const auto tagged{textures.collect()};
         // ReSharper disable once CppUseStructuredBinding
         const std::filesystem::path png{output / "png"};
         if (!exists(png))

@@ -26,6 +26,8 @@ target_sources(criterion PRIVATE
     dff/clump.h
     dff/geometry.cpp
     dff/geometry.h
+    dff/frames.cpp
+    dff/frames.cpp
 
     dds/dds_backing.cpp
     dds/dds_backing.h

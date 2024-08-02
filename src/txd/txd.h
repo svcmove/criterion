@@ -12,6 +12,6 @@ namespace criterion::txd {
 
     private:
         ChunkHeader header;
-        std::unique_ptr<TexturesContainer> textures{};
+        TexturesContainer textures{};
     };
 }
