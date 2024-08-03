@@ -10,6 +10,9 @@ add_executable(criterion)
 include_directories(src)
 
 add_subdirectory(src)
+set(CMAKE_DISABLE_FIND_PACKAGE_MNG ON)
+set(CMAKE_DISABLE_FIND_PACKAGE_libSquish ON)
+set(CMAKE_DISABLE_FIND_PACKAGE_LCMS2 ON)
 
 add_subdirectory(external/boost)
 add_subdirectory(external/DevIL/DevIL)

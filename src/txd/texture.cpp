@@ -27,11 +27,12 @@ namespace criterion::txd {
         }
     }
 
-    std::vector<u8> TextureData::getDds(const bool withMipMaps) {
+    std::vector<u8> TextureData::getDds(const bool withMipMaps) const {
         auto mapOf{withMipMaps ? mipMap : std::vector<u8>{}};
         std::vector<u8> result;
 
-        const std::span<u8, 4> format{reinterpret_cast<u8*>(&dataHeader.format), 4};
+        std::array<u8, 4> format{};
+        std::memcpy(&format[0], &dataHeader.format, 4);
         dds::DdsBacking::getBytes(result, dataBuffer, format, dataHeader.width, dataHeader.height, mapOf);
 
         return result;
@@ -44,7 +45,7 @@ namespace criterion::txd {
         std::memcpy(&header, &buffer[0], sizeof(header));
         auto position{stream.tellg()};
 
-        data = std::make_unique<TextureData>(stream);
+        data = TextureData(stream);
         position += header.size;
         if (stream.tellg() > position) {
             throw std::runtime_error("Failed to read texture data");

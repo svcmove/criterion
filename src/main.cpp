@@ -52,6 +52,8 @@ namespace criterion {
         }
         if (output.empty())
             output = "output-files";
+        if (!std::filesystem::exists(output))
+            std::filesystem::create_directory(output);
 
         if (mode == "img") {
             executor.imageFiles(inputDirs, std::move(inputStreams));

@@ -3,7 +3,7 @@
 Extract, edit, and compress IMG, TXD, and DFF files, with support for converting DDS to PNG
 
 ### How to build
-- mkdir build; cmake -DCMAKE_BUILD_TYPE=Release -GNinja ..
+- mkdir build; cd build; cmake -DCMAKE_BUILD_TYPE=Release -GNinja ..
 - ninja
 
 ### Usage examples

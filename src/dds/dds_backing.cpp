@@ -18,7 +18,7 @@ namespace criterion::dds {
 
         }
 
-        std::vector<u8> hdr{0x44, 0x44, 0x53, 0x20, 0x7c, 0x00, 0x00, 0x00, 0x07, 0x10};
+        std::vector<u8> hdr{'D', 'D', 'S', ' ', 0x7c, 0x00, 0x00, 0x00, 0x07, 0x10};
         hdr.resize(128);
         hdr[10] = mipMapFlagByte;
         std::memcpy(&hdr[12], &heightBytes[0], sizeof(height));
@@ -36,5 +36,9 @@ namespace criterion::dds {
 
         std::memcpy(&output[0], &hdr[0], hdr.size());
         std::memcpy(&output[128], &data[0], data.size());
+    }
+
+    void DdsBacking::stripDdsHeader(std::vector<u8>& ddsData) {
+        ddsData.erase(ddsData.begin(), ddsData.begin() + 128);
     }
 }

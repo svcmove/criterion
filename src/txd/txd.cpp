@@ -2,10 +2,10 @@
 #include <cstring>
 #include <print>
 
-#include <txd/txd.h>
-
 #include <IL/il.h>
 
+#include <txd/txd.h>
+#include <dds/dds_backing.h>
 namespace criterion::txd {
     TxdStream::TxdStream(FileStream& txd) {
         std::fstream io{txd.path, std::ios::in | std::ios::binary};
@@ -20,7 +20,6 @@ namespace criterion::txd {
     }
 
     void TxdStream::extract(const bool withPngs, const std::filesystem::path& output) const {
-        const auto tagged{textures.collect()};
         // ReSharper disable once CppUseStructuredBinding
         const std::filesystem::path png{output / "png"};
         if (!exists(png))
@@ -30,20 +29,26 @@ namespace criterion::txd {
         const ILuint canvas{ilGenImage()};
         ilBindImage(canvas);
 
-        for (const auto& [texture, dds] : tagged) {
+        const auto tagged{textures.collect()};
+        for (const auto& [texture, dds, format] : tagged) {
             std::print("Decompressing the texture: {}\n", texture);
 
             std::filesystem::path path{output / (texture + ".dds")};
             FileStream io{path, std::ios::out | std::ios::binary};
 
             io.write(reinterpret_cast<const char*>(&dds[0]), dds.size());
+            io.close();
 
-            if (!withPngs)
+            if (!withPngs || format.contains("DXT1")) {
+                auto ddsCp{dds};
+                dds::DdsBacking::stripDdsHeader(ddsCp);
+                // S3TC DXT1
                 continue;
+            }
             ilLoadL(IL_DDS, &dds[0], dds.size());
-            if (ilGetError() != IL_NO_ERROR)
-                throw std::runtime_error("Could not load the DDS file");
 
+            if (ilGetError() != IL_NO_ERROR)
+                throw std::runtime_error(std::format("Could not load the DDS file: {}", ilGetError()));
             path = png / (texture + ".png");
             ilSave(IL_PNG, path.string().c_str());
         }

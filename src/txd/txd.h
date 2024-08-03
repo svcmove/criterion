@@ -1,8 +1,6 @@
 #pragma once
 
-#include <memory>
 #include <types.h>
-
 #include <txd/textures_container.h>
 namespace criterion::txd {
     class TxdStream {

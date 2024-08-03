@@ -7,7 +7,7 @@ namespace criterion::txd {
     struct TextureTaggedData {
         std::string textureName;
         std::vector<u8> dds;
-
+        std::string format;
     };
 
     class TexturesContainer {

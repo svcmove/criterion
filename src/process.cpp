@@ -23,8 +23,6 @@ namespace criterion {
         split(files, by, boost::is_any_of(",;+"));
 
         if (operation == "extract") {
-            if (!std::filesystem::exists(output))
-                std::filesystem::create_directory(output);
             image->extract(output);
         }
         if (operation == "remove") {
@@ -50,8 +48,6 @@ namespace criterion {
         txd = std::make_unique<txd::TxdStream>(txdStreams.back());
 
         if (operation == "extract") {
-            if (!std::filesystem::exists(output))
-                std::filesystem::create_directory(output);
             txd->extract(true, output);
         }
     }
