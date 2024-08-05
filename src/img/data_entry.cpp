@@ -19,7 +19,7 @@ namespace criterion::img {
     }
 
     void DataEntry::getData(FileStream& img, std::vector<u8>& content) const {
-        const auto totalBytes{static_cast<u32>(super.info.streamingSize * sectorSize)};
+        const auto totalBytes{super.info.streamingSize * sectorSize};
         content.resize(totalBytes);
 
         std::fstream base{};
@@ -31,7 +31,9 @@ namespace criterion::img {
         }
 
         io.seekg(0);
-        io.readsome(reinterpret_cast<char*>(&content[0]), totalBytes);
+        io.read(reinterpret_cast<char*>(&content[0]), totalBytes);
+        io.seekg(-totalBytes, std::ios::cur);
+
         if (io.gcount() != totalBytes)
             throw std::runtime_error("Could not read data");
         const auto offset(super.info.offset * sectorSize);

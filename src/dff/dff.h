@@ -8,6 +8,6 @@ namespace criterion::dff {
     public:
         explicit DffStream(FileStream& stream);
         Clump clump;
-        ChunkHeader header;
+        ChunkHeader header{};
     };
 }

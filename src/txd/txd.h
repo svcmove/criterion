@@ -9,7 +9,7 @@ namespace criterion::txd {
         void extract(bool withPngs, const std::filesystem::path& output) const;
 
     private:
-        ChunkHeader header;
+        ChunkHeader header{};
         TexturesContainer textures{};
     };
 }

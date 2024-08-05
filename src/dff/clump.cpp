@@ -13,13 +13,15 @@ namespace criterion::dff {
             frames.emplace_back(stream);
         }
 
-        ChunkHeader extension;
-        stream.readsome(&buffer[0], sizeof(extension));
+        ChunkHeader extension{};
+        stream.read(&buffer[0], sizeof(extension));
+        stream.seekg(static_cast<std::streamoff>(-sizeof(extension)), std::ios::cur);
         std::memcpy(&extension, &buffer[0], sizeof(extension));
 
         if (extension.type == 3) {
             stream.seekg(extension.size, std::ios::cur);
         }
+
     }
 
     GeometryList::GeometryList(FileStream& stream) {

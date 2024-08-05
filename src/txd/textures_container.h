@@ -14,7 +14,7 @@ namespace criterion::txd {
     public:
         TexturesContainer() = default;
         explicit TexturesContainer(FileStream& stream);
-        std::vector<TextureTaggedData> collect() const;
+        [[nodiscard]] std::vector<TextureTaggedData> collect() const;
     private:
         std::list<Texture> textures{};
 
@@ -23,7 +23,7 @@ namespace criterion::txd {
 
             u16 count;
             u16 pad;
-        } container;
+        } container{};
     };
 
 }

@@ -15,7 +15,7 @@ namespace criterion::txd {
             dataHeader.size = dataHeader.sizeOptional;
             std::ranges::fill(dataHeader.palette, 0);
 
-            stream.seekg(-sizeof(dataHeader.palette), std::ios::cur);
+            stream.seekg(static_cast<std::streamoff>(-sizeof(dataHeader.palette)), std::ios::cur);
         }
         dataBuffer.resize(dataHeader.size);
         stream.read(reinterpret_cast<char*>(&dataBuffer[0]), dataHeader.size);
@@ -50,7 +50,7 @@ namespace criterion::txd {
         if (stream.tellg() > position) {
             throw std::runtime_error("Failed to read texture data");
         }
-        ChunkHeader extra;
+        ChunkHeader extra{};
         stream.read(&buffer[0], sizeof(extra));
         std::memcpy(&extra, &buffer[0], sizeof(extra));
         if (extra.type != 3)

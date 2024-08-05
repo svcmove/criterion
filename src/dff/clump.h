@@ -15,7 +15,7 @@ namespace criterion::dff {
             ChunkHeader chunk;
             ChunkHeader structure;
             u32 frames;
-        } header;
+        } header{};
 
         std::list<Frames> frames;
     };
@@ -29,7 +29,7 @@ namespace criterion::dff {
             ChunkHeader structure;
 
             u32 geometryCount;
-        } header;
+        } header{};
 
         std::list<Geometry> geometries;
     };
@@ -45,7 +45,7 @@ namespace criterion::dff {
             u32 atomicCount;
             u32 lightCount;
             u32 cameraCount;
-        } packet;
+        } packet{};
 
         FrameList frames;
         GeometryList geoPack;

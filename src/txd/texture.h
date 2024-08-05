@@ -7,7 +7,7 @@ namespace criterion::txd {
         TextureData() = default;
         explicit TextureData(FileStream& stream);
 
-        std::vector<u8> getDds(bool withMipMaps = false) const;
+        [[nodiscard]] std::vector<u8> getDds(bool withMipMaps = false) const;
         struct {
             ChunkHeader chunk;
 
@@ -39,18 +39,18 @@ namespace criterion::txd {
         explicit Texture(FileStream& stream);
         TextureData data;
 
-        auto getData(const bool mipMap) const {
+        [[nodiscard]] auto getData(const bool mipMap) const {
             return data.getDds(mipMap);
         }
-        auto getName() const {
+        [[nodiscard]] auto getName() const {
             const auto fixed{std::string{&data.dataHeader.name[0], data.dataHeader.name.size()}};
             return fixed.substr(0, fixed.find('\0'));
         }
-        auto getFormat() const {
+        [[nodiscard]] auto getFormat() const {
             return data.dataHeader.format;
         }
     private:
-        ChunkHeader header;
+        ChunkHeader header{};
         std::vector<u8> extraInfo;
     };
 }
