@@ -9,8 +9,8 @@ namespace criterion::dff {
 
         std::vector<char> buffer(sizeof(header));
         do {
-            io.seekg(header.size, std::ios::cur);
-            io.read(&buffer[0], sizeof(header));
+            stream.seekg(header.size, std::ios::cur);
+            stream.read(&buffer[0], sizeof(header));
 
             std::memcpy(&header, &buffer[0], sizeof(header));
         } while (header.type != 0x10);

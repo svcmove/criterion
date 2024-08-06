@@ -28,7 +28,12 @@ namespace criterion {
     enum CriterionRwType : u32 {
         String = 2,
         Texture = 6,
-        Material = 7
+        Material = 7,
+        MaterialList = 8,
+        Clump = 0x10,
+        Geometry = 0xf,
+
+        Frame = 0x0253f2fe // Stores the name of a frame within a Frame List
     };
     // https://gta.fandom.com/wiki/RenderWare_binary_stream_file
     enum CriterionRwMarker {

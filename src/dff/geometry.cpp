@@ -11,7 +11,7 @@ namespace criterion::dff {
         buffer.resize(header.size);
         stream.read(&buffer[0], buffer.size());
 
-        string = std::string(&buffer[0], buffer.size());
+        string = std::string(&buffer[0], std::strlen(&buffer[0]));
     }
 
     Texture::Texture(FileStream& stream) {
@@ -32,6 +32,8 @@ namespace criterion::dff {
         if (header.textured) {
             texture = Texture(stream);
         }
+
+        extension = Extension(stream);
     }
 
     MaterialList::MaterialList(FileStream& stream) {
@@ -45,9 +47,9 @@ namespace criterion::dff {
         for (u32 index{}; index < header.materialCount; index++) {
             materials.emplace_back(stream);
         }
-
     }
 
+    // https://gtamods.com/wiki/RpGeometry
     Geometry::Geometry(FileStream& stream) {
         std::vector<char> buffer(sizeof(header));
         const auto position{stream.tellg()};
@@ -61,12 +63,14 @@ namespace criterion::dff {
                 colors.emplace_back(
                     static_cast<float>(buffer[0]),
                     static_cast<float>(buffer[1]),
-                    static_cast<float>(buffer[2]));
+                    static_cast<float>(buffer[2]),
+                    static_cast<float>(buffer[3]));
             }
         }
         if (header.flags & 0xf || header.flags & 0x80) {
             for (u32 index{}; index < header.vertexCount; index++) {
                 stream.read(&buffer[0], sizeof(glm::vec2));
+                static_assert(sizeof(glm::vec2) == sizeof(float) * 2);
                 textCoords.emplace_back(
                     *reinterpret_cast<float*>(&buffer[0]),
                     *reinterpret_cast<float*>(&buffer[4]));
@@ -75,7 +79,7 @@ namespace criterion::dff {
 
         RenderTriangles triangle{};
         for (u32 index{}; index < header.trianglesCount; index++) {
-            stream.read(&buffer[0], 8);
+            stream.read(&buffer[0], sizeof(u16) * 4);
             triangle.xyz.x = *reinterpret_cast<u16*>(&buffer[0]);
             triangle.xyz.y = *reinterpret_cast<u16*>(&buffer[2]);
             triangle.xyz.z = *reinterpret_cast<u16*>(&buffer[4]);

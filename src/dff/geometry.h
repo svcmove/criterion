@@ -2,8 +2,11 @@
 
 #include <list>
 #include <vector>
+
 #include <glm/glm.hpp>
+
 #include <types.h>
+#include <dff/extension.h>
 namespace criterion::dff {
     class ImplicitString {
     public:
@@ -38,7 +41,9 @@ namespace criterion::dff {
             ChunkHeader header;
             ChunkHeader structure;
             u32 flags;
-            u32 color;
+            struct {
+                u8 r, g, b, a;
+            } color;
             u32 pad;
             u32 textured;
             float ambient;
@@ -46,6 +51,7 @@ namespace criterion::dff {
             float diffuse;
         } header;
 
+        Extension extension;
         Texture texture;
     };
     class MaterialList {
@@ -79,7 +85,7 @@ namespace criterion::dff {
             u16 materialIndex;
         };
 
-        std::vector<glm::vec3> colors;
+        std::vector<glm::vec4> colors;
         std::vector<glm::vec2> textCoords;
         std::vector<RenderTriangles> triangles;
 

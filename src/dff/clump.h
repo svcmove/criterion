@@ -5,6 +5,7 @@
 
 #include <dff/geometry.h>
 #include <dff/frames.h>
+#include <dff/extension.h>
 namespace criterion::dff {
     class FrameList {
     public:
@@ -18,6 +19,8 @@ namespace criterion::dff {
         } header{};
 
         std::list<Frames> frames;
+        // Names of available frames as strings
+        Extension extension;
     };
     class GeometryList {
     public:

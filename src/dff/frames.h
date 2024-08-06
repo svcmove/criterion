@@ -4,15 +4,14 @@
 #include <types.h>
 namespace criterion::dff {
     struct Model {
-        glm::vec3 rot1;
-        glm::vec3 rot2;
-        glm::vec3 rot3;
+        glm::vec3 right;
+        glm::vec3 up;
+        glm::vec3 at;
         glm::vec3 position;
         u32 parent;
         u32 flags;
-
-        std::array<u8, 12> pad;
     };
+    static_assert(sizeof(Model) == 56);
 
     class Frames {
     public:

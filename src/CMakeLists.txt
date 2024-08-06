@@ -28,6 +28,8 @@ target_sources(criterion PRIVATE
     dff/geometry.h
     dff/frames.cpp
     dff/frames.cpp
+    dff/extension.cpp
+    dff/extension.h
 
     dds/dds_backing.cpp
     dds/dds_backing.h
